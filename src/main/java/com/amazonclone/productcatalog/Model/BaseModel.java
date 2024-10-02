@@ -1,5 +1,18 @@
 package com.amazonclone.productcatalog.Model;
+import lombok.Getter;
+import lombok.Setter;
 
-public class BaseModel {
+import java.util.Date;
 
+@Getter
+@Setter
+
+public abstract class BaseModel {
+    private long id;
+
+    private Date createdAt;
+
+    private Date lastUpdatedAt;
+
+    private Status status;
 }
