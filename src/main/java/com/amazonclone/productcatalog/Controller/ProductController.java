@@ -8,6 +8,8 @@ import com.amazonclone.productcatalog.Service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,12 +34,21 @@ public class ProductController {
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long prodId) {
         System.out.println("Fetching product with ID: " + prodId);
-        Product product = productService.getProductById(prodId);
+        try{
+            if(prodId<=0){
+                throw new IllegalArgumentException("Invalid product ID");
+            }
+            Product product = productService.getProductById(prodId);
 
-        if(product == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            if(product == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            MultiValueMap<String,String> header = new LinkedMultiValueMap<>();
+            header.add("called By", "Yuvaraj");
+            return new ResponseEntity<>(convertProductToProductDto(product),header,HttpStatus.OK);
+        }catch(IllegalArgumentException e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(convertProductToProductDto(product));
     }
 
     private ProductDto convertProductToProductDto(Product product) {

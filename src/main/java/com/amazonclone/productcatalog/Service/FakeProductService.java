@@ -53,6 +53,11 @@ public class FakeProductService implements IProductService {
         return null;
     }
 
+    @Override
+    public Product replaceProduct(Product product, Long id) {
+        return null;
+    }
+
     public Product convertProductDtoToProduct(FakestoreProductDto fakestoreProductDto) {
         Product product = new Product();
         if (fakestoreProductDto != null && fakestoreProductDto.getId() != null) {
