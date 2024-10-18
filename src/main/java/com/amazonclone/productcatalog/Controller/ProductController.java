@@ -16,12 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     private IProductService productService;
 
-    @GetMapping("/products")
+    @GetMapping
     public List<ProductDto> products() {
         List<Product> products = productService.getAllProducts();
         List<ProductDto> productDtos = new ArrayList<>();
@@ -31,24 +32,51 @@ public class ProductController {
         return productDtos;
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long prodId) {
         System.out.println("Fetching product with ID: " + prodId);
-        try{
             if(prodId<=0){
                 throw new IllegalArgumentException("Invalid product ID");
             }
+
             Product product = productService.getProductById(prodId);
 
             if(product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                throw new NullPointerException("Product with ID: " + prodId + " not found");
             }
+
             MultiValueMap<String,String> header = new LinkedMultiValueMap<>();
             header.add("called By", "Yuvaraj");
             return new ResponseEntity<>(convertProductToProductDto(product),header,HttpStatus.OK);
-        }catch(IllegalArgumentException e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @PostMapping("/products")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
+        Product product = convertProductDtoToProduct(productDto);
+        Product createdProduct = productService.createProduct(product);
+        return new ResponseEntity<>(convertProductToProductDto(createdProduct), HttpStatus.CREATED);
+    }
+
+    @PutMapping({"{id}"})
+    public ResponseEntity<ProductDto> replaceProduct(@RequestBody ProductDto productDto,@PathVariable Long id){
+        Product input = convertProductDtoToProduct(productDto);
+        Product product = productService.replaceProduct(input,id);
+        return new ResponseEntity<>(convertProductToProductDto(product),HttpStatus.OK);
+    }
+
+    private Product convertProductDtoToProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setImageUrl(productDto.getImageUrl());
+        if(productDto.getCategory()!=null){
+            Category category = new Category();
+            category.setName(productDto.getCategory().getName());
+            product.setCategory(category);
         }
+        return product;
     }
 
     private ProductDto convertProductToProductDto(Product product) {
@@ -65,10 +93,5 @@ public class ProductController {
             productDto.setCategory(category);
         }
         return productDto;
-    }
-
-    @PostMapping("/products")
-    public ProductDto createProduct(@RequestBody Product product){
-        return null;
     }
 }
