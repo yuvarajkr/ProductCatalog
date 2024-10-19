@@ -51,7 +51,7 @@ public class ProductController {
     }
 
 
-    @PostMapping("/products")
+    @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
         Product product = convertProductDtoToProduct(productDto);
         Product createdProduct = productService.createProduct(product);
@@ -67,12 +67,14 @@ public class ProductController {
 
     private Product convertProductDtoToProduct(ProductDto productDto) {
         Product product = new Product();
+        product.setId(productDto.getId());
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setImageUrl(productDto.getImageUrl());
         if(productDto.getCategory()!=null){
             Category category = new Category();
+            category.setId(productDto.getCategory().getId());
             category.setName(productDto.getCategory().getName());
             product.setCategory(category);
         }
