@@ -12,5 +12,5 @@ public class SearchInputDto {
     private String keyword;
     private Integer page;
     private Integer rows;
-    //private List<SortParam> sortParamList = new ArrayList<>();
+    private List<SortParam> sortParamList = new ArrayList<>();
 }

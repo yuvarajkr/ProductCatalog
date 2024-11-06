@@ -27,7 +27,8 @@ public class SearchContoller {
 
         Page<Product> response = searchService.searchProduct(searchInputDto.getKeyword(),
                                                  searchInputDto.getPage(),
-                                                 searchInputDto.getRows());
-        return null;
+                                                 searchInputDto.getRows(),
+                                                 searchInputDto.getSortParamList());
+        return response;
     }
 }
