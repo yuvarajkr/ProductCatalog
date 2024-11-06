@@ -7,6 +7,7 @@ import com.amazonclone.productcatalog.Model.Category;
 import com.amazonclone.productcatalog.Model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 
+@Primary
 @Service
 public class FakeProductService implements IProductService {
 
